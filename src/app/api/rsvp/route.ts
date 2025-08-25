@@ -21,32 +21,32 @@ export async function POST(req: NextRequest) {
   const providedKey = (req.headers.get('x-invite-key') || (json && (json as any).inviteKey) || '').trim()
   const requiredKey = (process.env.INVITE_KEY || '').trim()
   if (requiredKey && providedKey !== requiredKey) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: { 'Cache-Control': 'no-store' } })
   }
   const cid = getClientId(req.headers)
   if (!rateLimit(`rsvp:${cid}`, 8, 60_000)) {
-    return NextResponse.json({ error: 'Too Many Requests' }, { status: 429 })
+    return NextResponse.json({ error: 'Too Many Requests' }, { status: 429, headers: { 'Cache-Control': 'no-store' } })
   }
   const parse = bodySchema.safeParse(json)
   if (!parse.success) {
-    return NextResponse.json({ error: 'Invalid payload' }, { status: 400 })
+    return NextResponse.json({ error: 'Invalid payload' }, { status: 400, headers: { 'Cache-Control': 'no-store' } })
   }
   const { id, name, status, guests, message } = parse.data
   // verify captcha if secret is set
   if (process.env.CAPTCHA_SECRET) {
     const cap = (json as any)?.captcha
     if (!cap?.nonce || !cap?.ts || !cap?.token || !cap?.answer) {
-      return NextResponse.json({ error: 'Captcha required' }, { status: 400 })
+      return NextResponse.json({ error: 'Captcha required' }, { status: 400, headers: { 'Cache-Control': 'no-store' } })
     }
     const { createHmac } = await import('crypto')
     const computed = createHmac('sha256', process.env.CAPTCHA_SECRET!).update(`${cap.nonce}:${cap.ts}:${cap.answer}`).digest('hex')
     if (computed !== cap.token) {
-      return NextResponse.json({ error: 'Captcha invalid' }, { status: 400 })
+      return NextResponse.json({ error: 'Captcha invalid' }, { status: 400, headers: { 'Cache-Control': 'no-store' } })
     }
   }
   const rsvpId = id ?? nano()
   const saved = await createOrUpdateRsvp(rsvpId, name.trim(), status, guests, message ?? null)
-  return NextResponse.json({ rsvp: saved })
+  return NextResponse.json({ rsvp: saved }, { headers: { 'Cache-Control': 'no-store' } })
 }
 
 export async function GET(req: NextRequest) {
@@ -56,12 +56,12 @@ export async function GET(req: NextRequest) {
   const providedKey = (req.headers.get('x-invite-key') || '').trim()
   const requiredKey = (process.env.INVITE_KEY || '').trim()
   if (requiredKey && providedKey !== requiredKey) {
-    return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+    return NextResponse.json({ error: 'Unauthorized' }, { status: 401, headers: { 'Cache-Control': 'no-store' } })
   }
-  if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400 })
+  if (!id) return NextResponse.json({ error: 'Missing id' }, { status: 400, headers: { 'Cache-Control': 'no-store' } })
   const rsvp = await getRsvpById(id)
-  if (!rsvp) return NextResponse.json({ error: 'Not found' }, { status: 404 })
-  return NextResponse.json({ rsvp })
+  if (!rsvp) return NextResponse.json({ error: 'Not found' }, { status: 404, headers: { 'Cache-Control': 'no-store' } })
+  return NextResponse.json({ rsvp }, { headers: { 'Cache-Control': 'no-store' } })
 }
 
 

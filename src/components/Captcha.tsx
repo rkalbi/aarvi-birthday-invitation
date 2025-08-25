@@ -14,7 +14,7 @@ export default function Captcha({ onSolved }: { onSolved: (c: CaptchaResult | nu
     setError(null)
     setBundle(null)
     try {
-      const res = await fetch('/api/captcha')
+      const res = await fetch('/api/captcha', { cache: 'no-store' })
       if (!res.ok) throw new Error('Failed to load captcha')
       setBundle(await res.json())
       onSolved(null)

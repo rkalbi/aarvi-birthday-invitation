@@ -29,10 +29,14 @@ export default function RsvpPage() {
     if (!id || !inviteKey) return
     ;(async () => {
       try {
-        const res = await fetch(`/api/rsvp?id=${id}`, { headers: { 'x-invite-key': inviteKey } })
+        const res = await fetch(`/api/rsvp?id=${id}`, { headers: { 'x-invite-key': inviteKey }, cache: 'no-store' })
         if (res.ok) {
-          const data = await res.json()
+          const text = await res.text()
+          if (!text || text.trim().length === 0) return
+          let data: any = null
+          try { data = JSON.parse(text) } catch { return }
           const r: Rsvp = data.rsvp
+          if (!r) return
           setResult(r)
           setName(r.name)
           setStatus(r.status)
@@ -51,9 +55,15 @@ export default function RsvpPage() {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', 'x-invite-key': inviteKey },
         body: JSON.stringify({ id: result?.id, name, status, guests, message: message || null, inviteKey, captcha }),
+        cache: 'no-store',
       })
-      const data = await res.json()
-      if (!res.ok) throw new Error(data?.error || 'Failed to save')
+      const text = await res.text()
+      let data: any = null
+      if (text && text.trim().length > 0) {
+        try { data = JSON.parse(text) } catch { throw new Error('Invalid server response') }
+      }
+      if (!res.ok) throw new Error((data && data.error) || `Failed to save (${res.status})`)
+      if (!data?.rsvp) throw new Error('Empty server response')
       setResult(data.rsvp)
     } catch (e: any) {
       setError(e.message)

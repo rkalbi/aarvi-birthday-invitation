@@ -33,8 +33,8 @@ export async function ensureSchema() {
       created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
       updated_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW()
     );
-    CREATE INDEX IF NOT EXISTS idx_rsvps_name ON rsvps (name);
   `
+  await sql`CREATE INDEX IF NOT EXISTS idx_rsvps_name ON rsvps (name);`
 }
 
 export async function createOrUpdateRsvp(

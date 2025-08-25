@@ -31,9 +31,14 @@ export default function AdminPage() {
     setLoading(true)
     setError(null)
     try {
-      const res = await fetch('/api/admin/rsvps', { headers: { 'x-admin-key': key } })
-      const json = await res.json()
-      if (!res.ok) throw new Error(json?.error || 'Failed to fetch')
+      const res = await fetch('/api/admin/rsvps', { headers: { 'x-admin-key': key }, cache: 'no-store' })
+      const text = await res.text()
+      let json: any = null
+      if (text && text.trim().length > 0) {
+        try { json = JSON.parse(text) } catch { throw new Error('Invalid server response') }
+      }
+      if (!res.ok) throw new Error((json && json.error) || `Failed to fetch (${res.status})`)
+      if (!json) throw new Error('Empty server response')
       setData(json.rsvps)
     } catch (e: any) {
       setError(e.message)
