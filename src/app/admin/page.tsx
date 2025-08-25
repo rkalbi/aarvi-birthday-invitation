@@ -48,7 +48,8 @@ export default function AdminPage() {
       ['id','name','status','guests','message','created_at'],
       ...data.map(r => [r.id, r.name, r.status, String(r.guests), r.message ?? '', r.created_at])
     ]
-    const csv = rows.map(r => r.map(v => `"${String(v).replaceAll('"','""')}"`).join(',')).join('\n')
+    const escape = (val: unknown) => `"${String(val).replace(/\"/g, '""')}"`
+    const csv = rows.map(r => r.map(escape).join(',')).join('\n')
     const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' })
     const url = URL.createObjectURL(blob)
     const a = document.createElement('a')
