@@ -22,8 +22,8 @@ export async function GET(req: NextRequest) {
       const type = IMAGE_EXT.has(ext)
         ? (ext === '.gif' ? 'image/gif' : ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg')
         : (ext === '.webm' ? 'video/webm' : 'video/mp4')
-      const ab = data.buffer.slice(data.byteOffset, data.byteOffset + data.byteLength)
-      return new Response(ab, { headers: { 'Content-Type': type, 'Cache-Control': 'no-store' } })
+      const body = new Uint8Array(data)
+      return new Response(body, { headers: { 'Content-Type': type, 'Cache-Control': 'no-store' } })
     }
     let entries: string[] = []
     try {
