@@ -1,0 +1,95 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg: 255 252 247;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  background-color: rgb(var(--bg));
+  background-image:
+    radial-gradient(60% 50% at 10% 10%, rgba(255, 182, 193, 0.35), transparent 60%),
+    radial-gradient(50% 40% at 90% 20%, rgba(173, 216, 230, 0.35), transparent 60%),
+    radial-gradient(50% 50% at 30% 90%, rgba(255, 223, 186, 0.35), transparent 60%);
+  animation: bgfloat 18s ease-in-out infinite alternate;
+}
+
+.btn {
+  @apply inline-flex items-center justify-center rounded-xl bg-brand-500 px-4 py-2 text-white font-medium shadow hover:bg-brand-600 focus:outline-none focus:ring-2 focus:ring-brand-400 disabled:opacity-50 disabled:cursor-not-allowed transition;
+}
+
+.card {
+  @apply rounded-2xl bg-white/50 backdrop-blur-md shadow-lg border border-white/50;
+}
+
+.input {
+  @apply w-full rounded-xl border border-zinc-300 bg-white px-4 py-2 shadow-sm focus:border-brand-400 focus:ring-2 focus:ring-brand-200 outline-none;
+}
+
+.parade {
+  animation: parade 22s linear infinite;
+}
+
+@keyframes parade {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+@keyframes bgfloat {
+  0% { background-position: 0px 0px, 0px 0px, 0px 0px; }
+  100% { background-position: 40px -20px, -30px 30px, 20px 40px; }
+}
+
+.wand {
+  animation: wand-sparkle 1.6s ease-in-out infinite;
+}
+@keyframes wand-sparkle {
+  0% { transform: rotate(0deg) translateY(0); opacity: 0.5; }
+  50% { transform: rotate(12deg) translateY(-6px) scale(1.1); opacity: 1; }
+  100% { transform: rotate(0deg) translateY(0); opacity: 0.5; }
+}
+
+.bob { animation: bob 3s ease-in-out infinite; display: inline-block; }
+.delay-200 { animation-delay: .2s }
+.delay-300 { animation-delay: .3s }
+.delay-500 { animation-delay: .5s }
+.delay-700 { animation-delay: .7s }
+@keyframes bob { 0%,100%{ transform: translateY(0) } 50%{ transform: translateY(-6px) } }
+
+.balloon-float { animation: balloon 8s ease-in-out infinite; }
+@keyframes balloon {
+  0% { transform: translateY(0) }
+  50% { transform: translateY(-6px) }
+  100% { transform: translateY(0) }
+}
+
+.wand-sparkle { animation: twinkle 1.5s ease-in-out infinite; }
+@keyframes twinkle { 0%{ opacity:.5; transform: translateY(0) } 50%{ opacity:1; transform: translateY(-2px) } 100%{ opacity:.5; transform: translateY(0) } }
+
+.animate-kenburns {
+  animation: kenburns 18s ease-in-out infinite alternate;
+}
+@keyframes kenburns {
+  0% { transform: scale(1.05) translate(0, 0) }
+  100% { transform: scale(1.2) translate(-3%, -3%) }
+}
+
+.blob { mask-image: radial-gradient(130% 100% at 50% 50%, #000 60%, transparent 75%); }
+
+/* Balloon animations */
+.float-y { animation: floatY 6s ease-in-out infinite; }
+.float-y-slow { animation: floatY 8s ease-in-out infinite; }
+.float-x { animation: floatX 7s ease-in-out infinite alternate; }
+@keyframes floatY { 0%{ transform: translateY(0) } 50%{ transform: translateY(-4px) } 100%{ transform: translateY(0) } }
+@keyframes floatX { 0%{ transform: translateX(-2px) } 100%{ transform: translateX(2px) } }
+
+.animate-floatAnimal { animation: floatAnimal 3.5s ease-in-out forwards; }
+@keyframes floatAnimal { 0%{ transform: translate(-10px, 10px) scale(0.9); opacity: .8 } 100%{ transform: translate(10px, -40px) scale(1.05); opacity: 1 } }
+
+
+
