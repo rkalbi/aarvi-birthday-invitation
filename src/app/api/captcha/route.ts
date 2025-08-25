@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import crypto from 'crypto'
+import crypto from 'node:crypto'
 import { getClientId, rateLimit } from '@/lib/ratelimit'
 
 const EMOJIS = ['🎂','🦄','🐼','🎈','🦊','🦁','🐰','🧁','🧚‍♀️','🦒'] as const

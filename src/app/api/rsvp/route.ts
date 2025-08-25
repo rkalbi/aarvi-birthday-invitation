@@ -38,7 +38,8 @@ export async function POST(req: NextRequest) {
     if (!cap?.nonce || !cap?.ts || !cap?.token || !cap?.answer) {
       return NextResponse.json({ error: 'Captcha required' }, { status: 400 })
     }
-    const computed = require('crypto').createHmac('sha256', process.env.CAPTCHA_SECRET).update(`${cap.nonce}:${cap.ts}:${cap.answer}`).digest('hex')
+    const { createHmac } = await import('crypto')
+    const computed = createHmac('sha256', process.env.CAPTCHA_SECRET!).update(`${cap.nonce}:${cap.ts}:${cap.answer}`).digest('hex')
     if (computed !== cap.token) {
       return NextResponse.json({ error: 'Captcha invalid' }, { status: 400 })
     }

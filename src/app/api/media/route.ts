@@ -3,6 +3,7 @@ import fs from 'fs/promises'
 import path from 'path'
 
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 
 const IMAGE_EXT = new Set(['.jpg', '.jpeg', '.png', '.webp', '.gif'])
 const VIDEO_EXT = new Set(['.mp4', '.mov', '.webm'])
@@ -21,7 +22,8 @@ export async function GET(req: NextRequest) {
       const type = IMAGE_EXT.has(ext)
         ? (ext === '.gif' ? 'image/gif' : ext === '.png' ? 'image/png' : ext === '.webp' ? 'image/webp' : 'image/jpeg')
         : (ext === '.webm' ? 'video/webm' : 'video/mp4')
-      return new NextResponse(data, { headers: { 'Content-Type': type, 'Cache-Control': 'no-store' } })
+      const body = new Uint8Array(data.buffer, data.byteOffset, data.byteLength)
+      return new Response(body, { headers: { 'Content-Type': type, 'Cache-Control': 'no-store' } })
     }
     let entries: string[] = []
     try {
